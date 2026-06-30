@@ -10,18 +10,23 @@ export default function ReminderForm({
   cardRef,
 }) {
   const handleDownload = async () => {
-    if (!cardRef?.current) return;
+    if (!cardRef?.current) {
+      console.error("No cardRef available");
+      return;
+    }
     try {
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 2,
-        cacheBust: true,
+        width: 1774,
+        height: 887,
       });
       const link = document.createElement('a');
       link.download = `zestro-reminder-${dueDate}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
-      console.error('Download failed:', err);
+      console.error("Download failed:", err);
+      alert("Failed to download: " + err.message);
     }
   };
 
@@ -82,7 +87,8 @@ export default function ReminderForm({
       <div className="space-y-2.5 pt-6">
         <button
           type="button"
-          className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-medium text-white/80 backdrop-blur-xl transition hover:bg-white/[0.08] hover:text-white"
+          onClick={handleDownload}
+          className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-medium text-white/80 backdrop-blur-xl transition hover:bg-white/[0.08] hover:text-white cursor-pointer"
         >
           ✦ Generate Reminder
         </button>

@@ -31,7 +31,7 @@ const ReminderCard = forwardRef(({ amount, dueDate }, ref) => {
         width: '1774px',
         height: '887px',
         background: `radial-gradient(ellipse at 105% 115%, rgba(215,225,205,0.40) 0%, transparent 50%), #F7F6F3`,
-        fontFamily: "'Poppins', 'Inter', Arial, Helvetica, sans-serif",
+        fontFamily: "Poppins, Inter, Arial, sans-serif",
         overflow: 'hidden',
         flexShrink: 0,
       }}
@@ -40,7 +40,6 @@ const ReminderCard = forwardRef(({ amount, dueDate }, ref) => {
       <img
         src={bgImage}
         alt="Background Texture"
-        crossOrigin="anonymous"
         style={{
           position: 'absolute',
           top: 0,
@@ -58,7 +57,6 @@ const ReminderCard = forwardRef(({ amount, dueDate }, ref) => {
       <img
         src={zestroLogo}
         alt="Zestro Logo"
-        crossOrigin="anonymous"
         style={{
           position: 'absolute',
           top: '50%',
@@ -90,7 +88,7 @@ const ReminderCard = forwardRef(({ amount, dueDate }, ref) => {
             letterSpacing: '0.3em',
             color: '#000000',
             marginBottom: '24px',
-            fontFamily: "'Poppins', 'Inter', Arial, Helvetica, sans-serif",
+            fontFamily: "Poppins, Inter, Arial, sans-serif",
           }}
         >
           PAYMENT REMINDER
@@ -105,7 +103,7 @@ const ReminderCard = forwardRef(({ amount, dueDate }, ref) => {
             lineHeight: '1',
             letterSpacing: '-3px',
             marginBottom: '0',
-            fontFamily: "'Poppins', 'Inter', Arial, Helvetica, sans-serif",
+            fontFamily: "Poppins, Inter, Arial, sans-serif",
           }}
         >
           {formatCurrency(amount)}
@@ -121,7 +119,7 @@ const ReminderCard = forwardRef(({ amount, dueDate }, ref) => {
               letterSpacing: '0.2em',
               color: '#000000',
               marginBottom: '8px',
-              fontFamily: "'Poppins', 'Inter', Arial, Helvetica, sans-serif",
+              fontFamily: "Poppins, Inter, Arial, sans-serif",
             }}
           >
             DUE DATE
@@ -132,7 +130,7 @@ const ReminderCard = forwardRef(({ amount, dueDate }, ref) => {
               fontWeight: '400',
               color: '#D32F2F',
               lineHeight: '1.1',
-              fontFamily: "'Poppins', 'Inter', Arial, Helvetica, sans-serif",
+              fontFamily: "Poppins, Inter, Arial, sans-serif",
             }}
           >
             {formatDate(dueDate)}
@@ -155,7 +153,7 @@ const ReminderCard = forwardRef(({ amount, dueDate }, ref) => {
             fontSize: '22px',
             fontWeight: '400',
             color: '#000000',
-            fontFamily: "'Poppins', 'Inter', Arial, Helvetica, sans-serif",
+            fontFamily: "Poppins, Inter, Arial, sans-serif",
             letterSpacing: '0.01em',
           }}
         >
