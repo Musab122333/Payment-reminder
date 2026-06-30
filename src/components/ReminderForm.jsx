@@ -1,187 +1,115 @@
-import React, { useState } from 'react';
+// src/components/ReminderForm.jsx
 import { toPng } from 'html-to-image';
+import zestroLogo from '../assets/zestro-logo.png';
 
-/**
- * ReminderForm — Premium dark-sidebar panel with form inputs and action buttons.
- * Handles live state updates (no "Generate" click needed for preview) but keeps
- * Generate button per spec. Download uses html-to-image toPng.
- */
-const ReminderForm = ({ amount, dueDate, onAmountChange, onDueDateChange, cardRef }) => {
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadError, setDownloadError] = useState(null);
-
+export default function ReminderForm({
+  amount,
+  dueDate,
+  onAmountChange,
+  onDueDateChange,
+  cardRef,
+}) {
   const handleDownload = async () => {
     if (!cardRef?.current) return;
-    setIsDownloading(true);
-    setDownloadError(null);
     try {
-      const today = new Date().toISOString().split('T')[0];
       const dataUrl = await toPng(cardRef.current, {
-        cacheBust: true,
         pixelRatio: 2,
-        quality: 1,
-        width: 1500,
-        height: 500,
+        cacheBust: true,
       });
       const link = document.createElement('a');
-      link.download = `payment-reminder-${today}.png`;
+      link.download = `zestro-reminder-${dueDate}.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
       console.error('Download failed:', err);
-      setDownloadError('Download failed. Please try again.');
-    } finally {
-      setIsDownloading(false);
     }
   };
 
   return (
-    <aside className="flex flex-col h-full bg-[#13151f] border-r border-[#1e2130]">
-      {/* ── Header ──────────────────────────────────────────────────── */}
-      <div className="px-8 pt-8 pb-6 border-b border-[#1e2130]">
-        {/* Zestro wordmark */}
-        <div className="flex items-center gap-2 mb-1">
-          <div className="w-7 h-7 rounded-lg bg-[#5DAF3E] flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-black text-[10px] leading-none">Z</span>
-          </div>
-          <span className="text-[#5DAF3E] font-bold text-sm tracking-wider uppercase">Zestro</span>
+    <div className="flex h-full flex-col p-7 text-white">
+      {/* Brand */}
+      <div className="flex items-center gap-2.5 mb-8">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#5DAF3E] to-[#3a8a26] shadow-[0_4px_16px_-4px_rgba(93,175,62,0.6)]">
+          <img src={zestroLogo} alt="" className="h-5 w-5 object-contain" />
         </div>
-        <h1 className="text-white font-semibold text-lg leading-snug mt-3">
-          Payment Reminder<br />
-          <span className="text-[#5DAF3E]">Generator</span>
-        </h1>
-        <p className="text-[#5a5f70] text-xs mt-2 leading-relaxed">
-          Fill in the details below to generate a professional payment reminder image.
-        </p>
+        <span className="text-xs font-bold uppercase tracking-[0.25em] text-white/70">
+          Zestro
+        </span>
       </div>
 
-      {/* ── Form Fields ─────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-8 py-7 space-y-6">
-        {/* Amount */}
-        <div>
-          <label
-            htmlFor="amount"
-            className="block text-xs font-semibold uppercase tracking-widest text-[#6b7280] mb-2"
-          >
-            Amount (₹)
-          </label>
-          <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#FF7A00] font-bold text-lg select-none">
-              ₹
-            </span>
-            <input
-              type="number"
-              id="amount"
-              min="0"
-              step="1"
-              value={amount}
-              onChange={(e) => onAmountChange(Number(e.target.value))}
-              className="w-full bg-[#1a1d2b] border border-[#2a2d3e] text-white text-lg font-semibold
-                         pl-10 pr-4 py-3 rounded-xl
-                         focus:outline-none focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00]/30
-                         transition-all duration-200 placeholder-[#3a3d4e]
-                         [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              placeholder="96700"
-            />
-          </div>
-          <p className="text-[#3a3d4e] text-xs mt-1.5 ml-1">
-            Enter amount in Indian Rupees
-          </p>
-        </div>
+      {/* Heading */}
+      <h1 className="text-2xl font-semibold leading-tight text-white">
+        Payment <br />
+        <span className="bg-gradient-to-r from-[#5DAF3E] to-[#9BE07A] bg-clip-text text-transparent">
+          Reminder Generator
+        </span>
+      </h1>
+      <p className="mt-2 text-sm text-white/50 leading-relaxed">
+        Fill in the details below to generate a professional payment reminder image.
+      </p>
 
-        {/* Due Date */}
-        <div>
-          <label
-            htmlFor="dueDate"
-            className="block text-xs font-semibold uppercase tracking-widest text-[#6b7280] mb-2"
-          >
-            Due Date
-          </label>
+      {/* Fields */}
+      <div className="mt-8 space-y-5">
+        <Field label="Amount (₹)" hint="Enter amount in Indian Rupees">
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => onAmountChange(Number(e.target.value))}
+            className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-lg font-semibold text-white placeholder-white/30 outline-none backdrop-blur-xl transition focus:border-[#5DAF3E]/60 focus:bg-white/[0.07] focus:ring-2 focus:ring-[#5DAF3E]/20"
+          />
+        </Field>
+
+        <Field label="Due Date" hint="Payment due by this date">
           <input
             type="date"
-            id="dueDate"
             value={dueDate}
             onChange={(e) => onDueDateChange(e.target.value)}
-            className="w-full bg-[#1a1d2b] border border-[#2a2d3e] text-white text-base font-medium
-                       px-4 py-3 rounded-xl
-                       focus:outline-none focus:border-[#D32F2F] focus:ring-1 focus:ring-[#D32F2F]/30
-                       transition-all duration-200
-                       [color-scheme:dark]"
+            className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-base font-medium text-white outline-none backdrop-blur-xl transition focus:border-[#5DAF3E]/60 focus:bg-white/[0.07] focus:ring-2 focus:ring-[#5DAF3E]/20 [color-scheme:dark]"
           />
-          <p className="text-[#3a3d4e] text-xs mt-1.5 ml-1">
-            Payment due by this date
-          </p>
-        </div>
-
-        {/* Preview info badge */}
-        <div className="bg-[#1a1d2b] border border-[#1e2130] rounded-xl px-4 py-3">
-          <div className="flex items-start gap-3">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#5DAF3E] mt-1.5 flex-shrink-0 animate-pulse" />
-            <p className="text-[#4a5060] text-xs leading-relaxed">
-              Card preview updates&nbsp;<span className="text-[#5DAF3E] font-medium">live</span> as you type.
-              Click <span className="text-white font-medium">Download PNG</span> to save the full-resolution card.
-            </p>
-          </div>
-        </div>
+        </Field>
       </div>
 
-      {/* ── Action Buttons ───────────────────────────────────────────── */}
-      <div className="px-8 py-7 border-t border-[#1e2130] space-y-3">
-        {/* Generate (visual confirmation, preview already live) */}
+      {/* Info card */}
+      <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5 text-xs leading-relaxed text-white/45 backdrop-blur-xl">
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#5DAF3E] mr-2 align-middle animate-pulse" />
+        Card preview updates <span className="text-[#9BE07A] font-medium">live</span> as you type. Click{' '}
+        <span className="font-semibold text-white/70">Download PNG</span> to save the full-resolution card.
+      </div>
+
+      <div className="flex-1" />
+
+      {/* Actions */}
+      <div className="space-y-2.5 pt-6">
         <button
-          id="generate-btn"
           type="button"
-          onClick={() => { }} // Preview is already live; button kept per spec
-          className="w-full py-3.5 px-4 rounded-xl font-semibold text-sm
-                     bg-[#1e2130] border border-[#2a2d3e] text-[#8b9098]
-                     hover:bg-[#22263a] hover:border-[#FF7A00]/40 hover:text-white
-                     active:scale-[0.98]
-                     transition-all duration-200 cursor-pointer"
+          className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-medium text-white/80 backdrop-blur-xl transition hover:bg-white/[0.08] hover:text-white"
         >
           ✦ Generate Reminder
         </button>
-
-        {/* Download */}
         <button
-          id="download-btn"
           type="button"
           onClick={handleDownload}
-          disabled={isDownloading}
-          className="w-full py-3.5 px-4 rounded-xl font-semibold text-sm text-white
-                     bg-gradient-to-r from-[#FF7A00] to-[#FF9A30]
-                     hover:from-[#e86d00] hover:to-[#FF8C10]
-                     active:scale-[0.98]
-                     disabled:opacity-60 disabled:cursor-not-allowed
-                     shadow-lg shadow-[#FF7A00]/20
-                     transition-all duration-200 cursor-pointer"
+          className="group relative w-full overflow-hidden rounded-xl px-4 py-3.5 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_rgba(255,122,41,0.7)] transition hover:shadow-[0_15px_40px_-10px_rgba(255,122,41,0.9)] active:scale-[0.98]"
         >
-          {isDownloading ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-              </svg>
-              Generating PNG…
-            </span>
-          ) : (
-            '↓ Download PNG'
-          )}
+          <span
+            className="absolute inset-0 bg-gradient-to-r from-[#FF7A29] via-[#FF5E3A] to-[#FF4D6D]"
+          />
+          <span className="absolute inset-0 bg-gradient-to-r from-[#FF4D6D] to-[#FF7A29] opacity-0 transition-opacity group-hover:opacity-100" />
+          <span className="relative">↓ Download PNG</span>
         </button>
-
-        {/* Error message */}
-        {downloadError && (
-          <p className="text-[#D32F2F] text-xs text-center mt-1">{downloadError}</p>
-        )}
       </div>
-
-      {/* ── Footer ──────────────────────────────────────────────────── */}
-      <div className="px-8 pb-6 text-center">
-        <p className="text-[#2a2d3e] text-[10px] tracking-wide">
-          ZESTRO FOODS AND GROCERIES · 2026
-        </p>
-      </div>
-    </aside>
+    </div>
   );
-};
+}
 
-export default ReminderForm;
+function Field({ label, hint, children }) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50">
+        {label}
+      </label>
+      {children}
+      <p className="mt-1.5 text-[11px] text-white/35">{hint}</p>
+    </div>
+  );
+}

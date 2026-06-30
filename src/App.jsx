@@ -3,16 +3,6 @@ import ReminderCard from './components/ReminderCard';
 import ReminderForm from './components/ReminderForm';
 import './index.css';
 
-/**
- * App — Root component for Zestro Payment Reminder Generator.
- * 
- * Layout:
- *   Left  (30%) — ReminderForm: inputs + action buttons
- *   Right (70%) — Card preview panel: live-updating ReminderCard
- * 
- * State is lifted here so both panels stay in sync.
- * cardRef is passed to ReminderCard (via forwardRef) and to ReminderForm for download.
- */
 function App() {
   const today = new Date().toISOString().split('T')[0];
   const [amount, setAmount] = useState(96700);
@@ -20,92 +10,87 @@ function App() {
   const cardRef = useRef(null);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#0f1117]">
-      {/* ── Left Panel: Form (30%) ───────────────────────────────────── */}
-      <div className="w-[30%] min-w-[280px] max-w-[420px] h-full overflow-hidden flex-shrink-0">
-        <ReminderForm
-          amount={amount}
-          dueDate={dueDate}
-          onAmountChange={setAmount}
-          onDueDateChange={setDueDate}
-          cardRef={cardRef}
+    <div className="relative flex h-screen w-screen overflow-hidden bg-[#07080c] text-white">
+      {/* ── Ambient aurora background ─────────────────────────────── */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-[#5DAF3E] opacity-25 blur-[140px]" />
+        <div className="absolute top-1/3 -right-40 h-[600px] w-[600px] rounded-full bg-[#FF7A29] opacity-20 blur-[160px]" />
+        <div className="absolute -bottom-40 left-1/3 h-[480px] w-[480px] rounded-full bg-[#3E8BFF] opacity-20 blur-[150px]" />
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)',
+            backgroundSize: '42px 42px',
+          }}
         />
       </div>
 
-      {/* ── Right Panel: Preview (70%) ───────────────────────────────── */}
-      <div className="flex-1 h-full flex flex-col bg-[#0f1117] overflow-hidden">
-        {/* Panel header */}
-        <div className="flex items-center justify-between px-8 py-4 border-b border-[#1a1d2b] flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#5DAF3E] animate-pulse" />
-            <span className="text-[#5a5f70] text-xs font-medium uppercase tracking-widest">
-              Live Preview
-            </span>
-          </div>
-          <span className="text-[#2a2d3e] text-xs font-mono">1774 × 887 px</span>
+      {/* ── Left Panel: Form (glass) ──────────────────────────────── */}
+      <aside className="relative z-10 w-[30%] min-w-[300px] max-w-[440px] h-full flex-shrink-0 p-5">
+        <div className="h-full rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl shadow-[0_8px_40px_-12px_rgba(0,0,0,0.6)] overflow-hidden">
+          <ReminderForm
+            amount={amount}
+            dueDate={dueDate}
+            onAmountChange={setAmount}
+            onDueDateChange={setDueDate}
+            cardRef={cardRef}
+          />
         </div>
+      </aside>
 
-        {/* Card canvas area */}
-        <div className="flex-1 flex items-center justify-center overflow-hidden p-8">
-          {/*
-            Scale the 1500×500 card to fit within the panel.
-            Using CSS transform scale — the card renders at full 1500×500 resolution
-            but is visually shrunk to fit. html-to-image captures at full resolution.
-          */}
-          <div className="relative" style={{ transformStyle: 'preserve-3d' }}>
-            {/* Subtle grid background for canvas feel */}
-            <div
-              className="absolute inset-0 rounded-2xl pointer-events-none"
-              style={{
-                background: `
-                  radial-gradient(circle at 50% 50%, rgba(93,175,62,0.03) 0%, transparent 70%),
-                  linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)
-                `,
-                backgroundSize: '100% 100%, 32px 32px, 32px 32px',
-              }}
-            />
+      {/* ── Right Panel: Preview ──────────────────────────────────── */}
+      <main className="relative z-10 flex-1 h-full flex flex-col py-5 pr-5">
+        <div className="flex h-full flex-col rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl shadow-[0_8px_40px_-12px_rgba(0,0,0,0.6)] overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between px-8 py-4 border-b border-white/[0.06]">
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#5DAF3E] opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#5DAF3E]" />
+              </span>
+              <span className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.2em]">
+                Live Preview
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-mono text-white/40">
+                1774 × 887
+              </span>
+            </div>
+          </div>
 
-            {/* Scale wrapper — shrinks 1500px card to fit available width */}
+          {/* Canvas */}
+          <div className="relative flex-1 flex items-center justify-center overflow-hidden p-10">
             <ScaledCardWrapper>
-              <ReminderCard
-                ref={cardRef}
-                amount={amount}
-                dueDate={dueDate}
-              />
+              <ReminderCard ref={cardRef} amount={amount} dueDate={dueDate} />
             </ScaledCardWrapper>
           </div>
-        </div>
 
-        {/* Bottom hint bar */}
-        <div className="flex items-center justify-center gap-6 py-3 border-t border-[#1a1d2b] flex-shrink-0">
-          <Hint icon="⌨" text="Edit fields on the left to update" />
-          <span className="text-[#1e2130] text-xs">·</span>
-          <Hint icon="↓" text="Download saves a 2× resolution PNG" />
+          {/* Footer hints */}
+          <div className="flex items-center justify-center gap-5 py-3.5 border-t border-white/[0.06]">
+            <Hint icon="⌨" text="Edit fields to update live" />
+            <span className="text-white/10">·</span>
+            <Hint icon="↓" text="Download saves a 2× resolution PNG" />
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
 
-/**
- * ScaledCardWrapper — Measures available space and scales the card to fit.
- * The card is always rendered at its true 1500×500 DOM size (for html-to-image),
- * but CSS transform scales it visually within the container.
- */
 function ScaledCardWrapper({ children }) {
   const CARD_W = 1774;
   const CARD_H = 887;
 
-  // Use CSS container queries / calc to derive the scale factor.
-  // We target a max visual width of ~(100vw * 0.7 - 4rem) and max height of ~(100vh - 10rem).
   return (
     <div
-      className="relative"
+      className="relative rounded-2xl"
       style={{
-        // Set the outer container to the card's visual (scaled) size using vw-based calc
-        width: `min(calc(70vw - 4rem), calc((100vh - 10rem) * ${CARD_W / CARD_H}))`,
-        height: `min(calc((70vw - 4rem) * ${CARD_H / CARD_W}), calc(100vh - 10rem))`,
+        width: `min(calc(70vw - 6rem), calc((100vh - 12rem) * ${CARD_W / CARD_H}))`,
+        height: `min(calc((70vw - 6rem) * ${CARD_H / CARD_W}), calc(100vh - 12rem))`,
+        boxShadow:
+          '0 30px 80px -20px rgba(93,175,62,0.25), 0 20px 50px -15px rgba(0,0,0,0.6)',
       }}
     >
       <div
@@ -115,20 +100,18 @@ function ScaledCardWrapper({ children }) {
           left: '50%',
           width: `${CARD_W}px`,
           height: `${CARD_H}px`,
-          transform: `translate(-50%, -50%) scale(var(--card-scale, 1))`,
           transformOrigin: 'center center',
-          // CSS custom property computed via inline style below
+          borderRadius: '16px',
+          overflow: 'hidden',
         }}
         ref={(el) => {
           if (!el) return;
           const parent = el.parentElement;
           if (!parent) return;
-          const parentW = parent.clientWidth;
-          const parentH = parent.clientHeight;
-          const scaleX = parentW / CARD_W;
-          const scaleY = parentH / CARD_H;
-          const scale = Math.min(scaleX, scaleY);
-          el.style.setProperty('--card-scale', scale.toFixed(4));
+          const scale = Math.min(
+            parent.clientWidth / CARD_W,
+            parent.clientHeight / CARD_H
+          );
           el.style.transform = `translate(-50%, -50%) scale(${scale.toFixed(4)})`;
         }}
       >
@@ -138,11 +121,12 @@ function ScaledCardWrapper({ children }) {
   );
 }
 
-/** Small hint chip for the bottom bar */
 function Hint({ icon, text }) {
   return (
-    <span className="flex items-center gap-1.5 text-[#3a3d4e] text-xs">
-      <span className="text-[#4a4d5e]">{icon}</span>
+    <span className="flex items-center gap-2 text-white/40 text-xs">
+      <span className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/5 text-[10px] text-white/60">
+        {icon}
+      </span>
       {text}
     </span>
   );
