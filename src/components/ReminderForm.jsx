@@ -118,7 +118,7 @@ const ReminderForm = ({ amount, dueDate, onAmountChange, onDueDateChange, cardRe
           <div className="flex items-start gap-3">
             <div className="w-1.5 h-1.5 rounded-full bg-[#5DAF3E] mt-1.5 flex-shrink-0 animate-pulse" />
             <p className="text-[#4a5060] text-xs leading-relaxed">
-              Card preview updates&nbsp;<span className="text-[#5DAF3E] font-medium">live</span> as you type. 
+              Card preview updates&nbsp;<span className="text-[#5DAF3E] font-medium">live</span> as you type.
               Click <span className="text-white font-medium">Download PNG</span> to save the full-resolution card.
             </p>
           </div>
@@ -131,7 +131,7 @@ const ReminderForm = ({ amount, dueDate, onAmountChange, onDueDateChange, cardRe
         <button
           id="generate-btn"
           type="button"
-          onClick={() => {}} // Preview is already live; button kept per spec
+          onClick={() => { }} // Preview is already live; button kept per spec
           className="w-full py-3.5 px-4 rounded-xl font-semibold text-sm
                      bg-[#1e2130] border border-[#2a2d3e] text-[#8b9098]
                      hover:bg-[#22263a] hover:border-[#FF7A00]/40 hover:text-white

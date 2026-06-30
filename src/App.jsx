@@ -42,7 +42,7 @@ function App() {
               Live Preview
             </span>
           </div>
-          <span className="text-[#2a2d3e] text-xs font-mono">1500 × 500 px</span>
+          <span className="text-[#2a2d3e] text-xs font-mono">1774 × 887 px</span>
         </div>
 
         {/* Card canvas area */}
@@ -94,8 +94,8 @@ function App() {
  * but CSS transform scales it visually within the container.
  */
 function ScaledCardWrapper({ children }) {
-  const CARD_W = 1500;
-  const CARD_H = 500;
+  const CARD_W = 1774;
+  const CARD_H = 887;
 
   // Use CSS container queries / calc to derive the scale factor.
   // We target a max visual width of ~(100vw * 0.7 - 4rem) and max height of ~(100vh - 10rem).
